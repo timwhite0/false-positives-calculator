@@ -5,7 +5,6 @@ library(shiny)
 library(shinydashboard)
 library(reactable)
 library(readxl)
-library(packcircles)
 
 
 ##### Data
@@ -15,6 +14,26 @@ studies = read_excel("Studies spreadsheet.xlsx")
 studies$Disease = as.factor(studies$Disease)
 studies$`Screening test` = as.factor(studies$`Screening test`)
 studies$`Study ID` = as.factor(studies$`Study ID`)
+studies$`USPSTF recommendation` = ifelse(studies$Disease == "Breast cancer",
+                                         "https://uspreventiveservicestaskforce.org/uspstf/recommendation/breast-cancer-screening",
+                                         ifelse(studies$Disease == "Cervical cancer",
+                                                "https://uspreventiveservicestaskforce.org/uspstf/recommendation/cervical-cancer-screening",
+                                                ifelse(studies$Disease == "Chlamydia" | studies$Disease == "Gonorrhea",
+                                                       "https://uspreventiveservicestaskforce.org/uspstf/recommendation/chlamydia-and-gonorrhea-screening",
+                                                       ifelse(studies$Disease == "Colorectal cancer",
+                                                              "https://uspreventiveservicestaskforce.org/uspstf/recommendation/colorectal-cancer-screening",
+                                                              ifelse(studies$Disease == "Hepatitis B",
+                                                                     "https://uspreventiveservicestaskforce.org/uspstf/recommendation/hepatitis-b-virus-infection-screening",
+                                                                     ifelse (studies$Disease == "Hepatitis C",
+                                                                             "https://uspreventiveservicestaskforce.org/uspstf/recommendation/hepatitis-c-screening",
+                                                                             ifelse(studies$Disease == "HIV",
+                                                                                    "https://uspreventiveservicestaskforce.org/uspstf/recommendation/human-immunodeficiency-virus-hiv-infection-screening",
+                                                                                    ifelse (studies$Disease == "Lung cancer",
+                                                                                            "https://uspreventiveservicestaskforce.org/uspstf/recommendation/lung-cancer-screening",
+                                                                                            ifelse (studies$Disease == "Prostate cancer",
+                                                                                                    "https://uspreventiveservicestaskforce.org/uspstf/recommendation/prostate-cancer-screening",
+                                                                                                    ifelse (studies$Disease == "Syphilis",
+                                                                                                            "https://uspreventiveservicestaskforce.org/uspstf/recommendation/syphilis-infection-in-nonpregnant-adults-and-adolescents", NA))))))))))
 
 
 ## Lifetime number of tests
@@ -74,7 +93,7 @@ ui = dashboardPage(
             ),
             
             tabItem(tabName = "calculator",
-                    
+
                     h4("Hello! I have a few questions for you:"),
                     
                     fluidRow(
@@ -117,7 +136,7 @@ ui = dashboardPage(
                     ),
                     
                     hr(),
-                    h4("According to the U.S. Preventive Services Task Force (USPSTF), you should follow the screening guidelines for these cancers and STDs:"),
+                    h4("According to the U.S. Preventive Services Task Force (USPSTF), you should get screened for the following cancers and STDs:"),
 
                     fluidPage(
                         conditionalPanel(
@@ -194,14 +213,17 @@ ui = dashboardPage(
                     ),
                     
                     hr(),
-                    h4("The estimated probability that you will receive a false positive from a screening test for one of these cancers or STDs in a lifetime is:"),
+                    
+                    h4("The estimated probability that you will receive at least one false positive in a lifetime for one of these cancers or STDs is:"),
                     
                     fluidRow(
                         column(width = 6, offset = 3,
-                            box(h1(htmlOutput("lifetimeFP")),
-                                width = 12, background = "olive"), align = "center",
+                                box(h1(htmlOutput("lifetimeFP")),
+                                    width = 12, background = "olive"),
+                               align = "center",
                         ),
-                    )
+                        
+                    ),
                     
             ),
             
@@ -729,7 +751,7 @@ server = function(input, output, session) {
     output$howthisworks = renderText(
         paste0("<font size = '+0.1'><b>Here's how this dashboard works:</b>",
                "<br><br>",
-               "Below, on this tab, you'll find a description of the dashboard and the project on which it's based.",
+               "If you scroll down on this tab, you'll find a description of the dashboard and the project on which it's based.",
                "<br><br>",
                "On the <font size = '+1.5', color = '2d802a'><b>CALCULATOR</b></font> tab, the dashboard will ask you to answer a few basic demographic and behavioral questions. Then it will estimate the probability that you'll receive a false positive in your lifetime, assuming that you adhere to the screening guidelines of the ",
                a("U.S. Preventive Services Task Force (USPSTF)", href = "https://www.uspreventiveservicestaskforce.org/uspstf/", target = "_blank"),
@@ -737,7 +759,11 @@ server = function(input, output, session) {
                "<br><br>",
                "On the <font size = '+1.5', color = '2d802a'><b>SCREENING GUIDELINES</b></font> tab, you can learn more about when and how often you should get tested for the cancers and STDs for which you meet the USPSTF screening criteria. You can also read about the guidelines for all the other diseases, if you're curious.",
                "<br><br>",
-               "Finally, on the <font size = '+1.5', color = '2d802a'><b>DATA</b></font> tab, you can explore the data that are used to estimate these probabilities. We also provide links for all 116 studies in the dataset.")
+               "Finally, on the <font size = '+1.5', color = '2d802a'><b>DATA</b></font> tab, you can explore the data that are used to estimate these probabilities. We also provide links to all 116 studies in the dataset.",
+               "<br><br>",
+               "The data and source code for this project are available ",
+               a("here", href = "https://github.com/timwhite0/false-positives-calculator", target = "_blank"),
+               "."),
     )
     
     output$introduction = renderText(
@@ -774,10 +800,6 @@ server = function(input, output, session) {
                       STDs.only = FALSE,
                       only.most.common = TRUE,
                       B = 100)
-    )
-    
-    create_bubble_chart = reactive(
-        plot(seq(1, 10, by = 1), rnorm(10, 5, 1))
     )
     
     output$breast = renderText(
@@ -1131,9 +1153,37 @@ server = function(input, output, session) {
                   defaultPageSize = 35,
                   showSortable = TRUE,
                   wrap = FALSE,
-                  columns = list(Disease = colDef(minWidth = 140),
+                  columns = list(Disease = colDef(minWidth = 140,
+                                                  cell = function(value, index) {
+                                                      # Render as a link
+                                                      a(href = paste(studies[which(studies$`Screening test` == "Mammography" |
+                                                                                       studies$`Screening test` == "Pap" |
+                                                                                       studies$`Screening test` == "NAAT (chlamydia)" |
+                                                                                       studies$`Screening test` == "Colonoscopy" |
+                                                                                       studies$`Screening test` == "NAAT (gonorrhea)" |
+                                                                                       studies$`Screening test` == "HBsAg" |
+                                                                                       studies$`Screening test` == "Anti-HCV antibody" |
+                                                                                       studies$`Screening test` == "Antigen/antibody" |
+                                                                                       studies$`Screening test` == "Low-dose CT" |
+                                                                                       studies$`Screening test` == "PSA" |
+                                                                                       studies$`Screening test` == "RPR"),][index, "USPSTF recommendation"]), target = "_blank", value)
+                                                  }),
                                  'Screening test' = colDef(minWidth = 140),
-                                 'Study ID' = colDef(minWidth = 140),
+                                 'Study ID' = colDef(minWidth = 140,
+                                                     cell = function(value, index) {
+                                                         # Render as a link
+                                                         a(href = paste(studies[which(studies$`Screening test` == "Mammography" |
+                                                                                          studies$`Screening test` == "Pap" |
+                                                                                          studies$`Screening test` == "NAAT (chlamydia)" |
+                                                                                          studies$`Screening test` == "Colonoscopy" |
+                                                                                          studies$`Screening test` == "NAAT (gonorrhea)" |
+                                                                                          studies$`Screening test` == "HBsAg" |
+                                                                                          studies$`Screening test` == "Anti-HCV antibody" |
+                                                                                          studies$`Screening test` == "Antigen/antibody" |
+                                                                                          studies$`Screening test` == "Low-dose CT" |
+                                                                                          studies$`Screening test` == "PSA" |
+                                                                                          studies$`Screening test` == "RPR"),][index, "Source"]), target = "_blank", value)
+                                                     }),
                                  TP = colDef(minWidth = 80),
                                  FN = colDef(minWidth = 80),
                                  TN = colDef(minWidth = 80),
