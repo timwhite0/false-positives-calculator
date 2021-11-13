@@ -1,17 +1,17 @@
-﻿Subpopulation,Abbreviation,,,,,,,,,,,,,,
-Women (baseline),WB,,,,,,,,,,,,,,
-Women with one pregnancy,WP1,,,,,,,,,,,,,,
-Women with two pregnancies,WP2,,,,,,,,,,,,,,
-Female smokers,WS,,,,,,,,,,,,,,
-Female smokers (one lung screening),WS1,,,,,,,,,,,,,,
-Women with one pregnancy who smoke (one lung screening),WP1S1,,,,,,,,,,,,,,
-Women with two pregnancies who smoke (one lung screening),WP2S1,,,,,,,,,,,,,,
-Men (baseline),MB,,,,,,,,,,,,,,
-Men who have sex with men,MSM,,,,,,,,,,,,,,
-Male smokers,MS,,,,,,,,,,,,,,
-Male smokers (one lung screening),MS1,,,,,,,,,,,,,,
-MSM who smoke (one lung screening),MSMS1,,,,,,,,,,,,,,
-Men who get tested for prostate,MP,,,,,,,,,,,,,,
-MSM who get tested for prostate,MSMP,,,,,,,,,,,,,,
-Men who get tested for prostate and smoke (one lung screening),MPS1,,,,,,,,,,,,,,
-MSM who get tested for prostate and smoke (one lung screening),MSMPS1,,,,,,,,,,,,,,
+Subpopulation,Abbreviation
+Women (baseline),WB
+Women with one pregnancy,WP1
+Women with two pregnancies,WP2
+Female smokers,WS
+Female smokers (one lung screening),WS1
+Women with one pregnancy who smoke (one lung screening),WP1S1
+Women with two pregnancies who smoke (one lung screening),WP2S1
+Men (baseline),MB
+Men who have sex with men,MSM
+Male smokers,MS
+Male smokers (one lung screening),MS1
+MSM who smoke (one lung screening),MSMS1
+Men who get tested for prostate,MP
+MSM who get tested for prostate,MSMP
+Men who get tested for prostate and smoke (one lung screening),MPS1
+MSM who get tested for prostate and smoke (one lung screening),MSMPS1
