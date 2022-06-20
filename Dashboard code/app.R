@@ -69,7 +69,7 @@ ui = dashboardPage(
         sidebarMenu(
             menuItem("Overview", tabName = "overview", icon = icon("binoculars")),
             menuItem("Calculator", tabName = "calculator", icon = icon("calculator")),
-            menuItem("Screening guidelines", tabName = "guidelines", icon = icon("clipboard-list")),
+            menuItem("Screening Guidelines", tabName = "guidelines", icon = icon("clipboard-list")),
             menuItem("Data", tabName = "data", icon = icon("table"))
         )
     ),
@@ -126,12 +126,12 @@ ui = dashboardPage(
                             box(title = "Are you a man who has sex with men (MSM)?",
                                 selectInput("MSM", label = NULL, selected = "No",
                                             choices = c("No", "Yes")),
-                                width = 5, collapsible = FALSE, solidHeader = FALSE, status = "primary"),
+                                width = 6, collapsible = FALSE, solidHeader = FALSE, status = "primary"),
                             
                             box(title = "Prostate screening is optional for men. Do you intend to get screened for prostate cancer?",
                                 selectInput("prostate", label = NULL, selected = "No",
                                             choices = c("No", "Yes")),
-                                width = 7, collapsible = FALSE, solidHeader = FALSE, status = "primary")
+                                width = 6, collapsible = FALSE, solidHeader = FALSE, status = "primary")
                         )
                     ),
                     
@@ -774,14 +774,20 @@ server = function(input, output, session) {
                "Unfortunately, screening technology is not perfect, so there's a chance that your test result will wind up being either a <font color = '316e91'><b>false negative</b></font> (indicating that you <font color = '2d802a'><b>don't</b></font> have the disease when you actually <font color = '2d802a'><b>do</b></font>) or a <font color = '316e91'><b>false positive</b></font> (indicating that you <font color = '2d802a'><b>do</b></font> have the disease when you actually <font color = '2d802a'><b>don't</b></font>).",
                "<br><br>",
                "False positives are a necessary evil — we can't get rid of them without simultaneously increasing the prevalence of false negatives, which we would also like to avoid. Still, it's important to recognize that <font color = '316e91'><b>false positives have serious consequences</b></font>. They can generate stress and strain personal relationships. They can discourage you from getting screened again in the future. They can even lead you to undergo unnecessary and costly medical procedures.",
-               "<br><br><br>",
+               "<br><br>",
                "Because of these adverse effects, you might find yourself asking, <font color = '2d802a'><b>\"What are the chances that the result of my next screening test — say, a colonoscopy — will be a false positive?\"</b></font>",
                "<br><br>After thinking about it some more, you might wonder, <font color = '2d802a'><b>\"My doctor told me that I'm supposed to get multiple colonoscopies in my lifetime. What's the likelihood that I'll get a false positive from at least one of them?\"</b></font>",
                "<br><br>And you might even realize, <font color = '2d802a'><b>\"I'm supposed to get screened for a bunch of diseases over time. What's the probability that I'll receive at least one false positive from <i>any</i> screening test in my lifetime?\"</b></font>",
-               "<br><br><br>",
-               "This dashboard is designed to help you answer these questions and improve your perceptions of screening test precision. It is a complementary tool for a forthcoming paper entitled, <font color = '316e91'><b>\"Estimating the lifetime risk of a false positive screening test result,\"</b></font> written by Tim White and Dr. Sara Algeri at the University of Minnesota - Twin Cities. We highly encourage you to go read the paper first, and then come back and play around with the dashboard.",
-               "<br><br><br>",
-               "Please note that <b>this dashboard is no substitute for your healthcare provider</b>, who can supply more personalized advice about the screening practices that are best for you. For instance, they will be able to tell you if you should get screened for any diseases <i>not</i> included in our final analysis, such as diabetes, osteoporosis, and several types of cancer (e.g., oral, ovarian, pancreatic, skin, testicular, thyroid) for which routine screening is not recommended.")
+               "<br><br>",
+               "This dashboard is designed to help you answer these questions and improve your perception of screening test precision. It is a complementary tool for a forthcoming paper entitled ",
+               a("\"Estimating the lifetime risk of a false positive screening test result,\"", href = "https://arxiv.org/abs/2206.08463", target = "_blank"),
+               " written by ",
+               a("Tim White", href = "https://timwhite0.github.io", target = "_blank"),
+               " and ",
+               a("Sara Algeri", href = "https://salgeri.umn.edu", target = "_blank"),
+               " at the University of Minnesota - Twin Cities.",
+               "<br><br>",
+               "Please note that <font color = '316e91'><b>this dashboard is no substitute for your healthcare provider</b></font>, who can supply more personalized advice about the screening practices that are best for you. For instance, they will be able to tell you if you should get screened for any diseases <i>not</i> included in our final analysis, such as diabetes, osteoporosis, and several types of cancer for which routine screening is not recommended (e.g., oral, ovarian, pancreatic, skin, testicular, thyroid).")
     )
     
     subpop = reactive(
